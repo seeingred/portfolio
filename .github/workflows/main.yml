@@ -22,11 +22,14 @@ jobs:
         run: |
           echo "$SSH_PRIVATE_KEY" > ./private.key
           sudo chmod 600 ./private.key
-          mv ./build ./portfolio
-          scp -i ./private.key -o StrictHostKeyChecking=no -r ./portfolio $SSH_USER@$SSH_HOST:$SSH_PATH
+          mkdir -p ~/.ssh/
+          echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          scp -i ./private.key -r ./build/. $SSH_USER@$SSH_HOST:$SSH_PATH
+          ssh -i ./private.key $SSH_USER@$SSH_HOST "cd $SSH_PATH && rm -rf ./."
         shell: bash
         env:
           SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
           SSH_PATH: ${{secrets.SSH_PATH}}
           SSH_HOST: ${{secrets.SSH_HOST}}
           SSH_USER: ${{secrets.SSH_USER}}
+          SSH_KNOWN_HOSTS: ${{secrets.SSH_KNOWN_HOSTS}}
