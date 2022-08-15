@@ -6,32 +6,29 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      # - name: Install node (16) and yarn
-      #   run: |
-      #     sudo apt install curl
-      #     curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
-      #     sudo apt-get install -y nodejs
-      #     sudo npm install --location=global yarn
+      - name: Install node (16) and yarn
+        run: |
+          sudo apt install curl
+          curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+          sudo apt-get install -y nodejs
+          sudo npm install --location=global yarn
       - name: Build yarn app
         run: |
-          cd ${{ github.workspace }}
-          ls
-          cd ..
-          ls
+          cd ${{ github.workspace }}../
           yarn build
-      # - name: Create SSH key an copy files
-      #   run: |
-      #     mkdir -p ~/.ssh/
-      #     echo "$SSH_PRIVATE_KEY" > ../private.key
-      #     sudo chmod 600 ../private.key
-      #     echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
-      #     cd ${{ github.workspace }}/build
-      #     scp -i ${{env.SSH_KEY_PATH}} -o StrictHostKeyChecking=no -r ${{env.SSH_USER}}@{{env.SSH_HOST}}:{{env.SSH_PATH}} ./
-      #   shell: bash
-      #   env:
-      #     SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
-      #     SSH_KNOWN_HOSTS: ${{secrets.SSH_KNOWN_HOSTS}}
-      #     SSH_PATH: ${{secrets.SSH_PATH}}
-      #     SSH_HOST: ${{secrets.SSH_HOST}}
-      #     SSH_USER: ${{secrets.SSH_USER}}
-      #     SSH_KEY_PATH: ${{ github.workspace }}/../private.key
+      - name: Create SSH key an copy files
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$SSH_PRIVATE_KEY" > ../private.key
+          sudo chmod 600 ../private.key
+          echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          cd ${{ github.workspace }}/build
+          scp -i ${{env.SSH_KEY_PATH}} -o StrictHostKeyChecking=no -r ${{env.SSH_USER}}@{{env.SSH_HOST}}:{{env.SSH_PATH}} ./
+        shell: bash
+        env:
+          SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
+          SSH_KNOWN_HOSTS: ${{secrets.SSH_KNOWN_HOSTS}}
+          SSH_PATH: ${{secrets.SSH_PATH}}
+          SSH_HOST: ${{secrets.SSH_HOST}}
+          SSH_USER: ${{secrets.SSH_USER}}
+          SSH_KEY_PATH: ${{ github.workspace }}/../private.key
