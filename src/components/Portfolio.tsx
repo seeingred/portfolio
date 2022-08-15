@@ -100,6 +100,7 @@ export default function Portfolio(): JSX.Element {
                 newCoins = addCoins(data, newCoins);
             } else {
                 for (const address of addressInfo.addresses) {
+                    console.log(`1:  `, 1);
                     const data: coin[] = await fetchAssets(
                         address.value,
                         addressInfo.tokens,
