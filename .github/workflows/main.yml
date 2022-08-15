@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Install node (16) and yarn
+      - name: Install node (lts) and yarn
         run: |
           sudo apt install curl
           curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
@@ -16,21 +16,17 @@ jobs:
           sudo npm install --location=global yarn
       - name: Build yarn app
         run: |
-          cd ${{ github.workspace }}
           yarn
           yarn build
       - name: Create SSH key an copy files
         run: |
-          mkdir -p ~/.ssh/
-          echo "$SSH_PRIVATE_KEY" > ../private.key
-          sudo chmod 600 ../private.key
-          echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
-          scp -i $SSH_KEY_PATH -o StrictHostKeyChecking=no -r ${{ github.workspace }}/build $SSH_USER@$SSH_HOST:$SSH_PATH
+          echo "$SSH_PRIVATE_KEY" > ./private.key
+          sudo chmod 600 ./private.key
+          mv ./build ./portfolio
+          scp -i ./private.key -o StrictHostKeyChecking=no -r $./portfolio $SSH_USER@$SSH_HOST:$SSH_PATH
         shell: bash
         env:
           SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
-          SSH_KNOWN_HOSTS: ${{secrets.SSH_KNOWN_HOSTS}}
           SSH_PATH: ${{secrets.SSH_PATH}}
           SSH_HOST: ${{secrets.SSH_HOST}}
           SSH_USER: ${{secrets.SSH_USER}}
-          SSH_KEY_PATH: ${{ github.workspace }}/../private.key
