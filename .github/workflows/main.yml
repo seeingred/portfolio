@@ -11,9 +11,10 @@ jobs:
           sudo apt install curl
           curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
           sudo apt-get install -y nodejs
-          sudo npm install --global yarn
+          sudo npm install --location=global yarn
       - name: Build yarn app
         run: |
+          cd ${{ github.workspace }}
           yarn build
       - name: Create SSH key an copy files
         run: |
@@ -21,7 +22,8 @@ jobs:
           echo "$SSH_PRIVATE_KEY" > ../private.key
           sudo chmod 600 ../private.key
           echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
-          scp -i ${{env.SSH_KEY_PATH}} -o StrictHostKeyChecking=no -r ${{env.SSH_USER}}@{{env.SSH_HOST}}:{{env.SSH_PATH}} .
+          cd ${{ github.workspace }}/build
+          scp -i ${{env.SSH_KEY_PATH}} -o StrictHostKeyChecking=no -r ${{env.SSH_USER}}@{{env.SSH_HOST}}:{{env.SSH_PATH}} ./
         shell: bash
         env:
           SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
