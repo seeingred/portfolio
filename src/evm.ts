@@ -60,8 +60,6 @@ export const fetchAssets = async (
         };
         console.log(`coin:  `, coin);
         const tokenToConvert = tokenConvert.find(t => t.code.toUpperCase() === coin.code.toUpperCase());
-        
-        console.log(`tokenToConvert:  `, tokenToConvert);
         if (tokenToConvert) {
             coin.code = tokenToConvert.toCode.toUpperCase();
             coin.amount = await tokenToConvert.convert(coin.amount);

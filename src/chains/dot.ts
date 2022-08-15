@@ -13,6 +13,7 @@ export const fetchAssets = async (address: string) => {
 
     // Retrieve the account balance & nonce via the system module
     const resp = (await api.query.system.account(address)).toJSON() as polkaDotAddressJson;
+    console.log(`resp:  `, resp);
 
     coins.push(
         {
