@@ -8,6 +8,10 @@ jobs:
     steps:
       - name: Install node (16) and yarn
         run: |
+          cd ${{ github.workspace }}
+          ls
+          cd ..
+          ls
           sudo apt install curl
           curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
           sudo apt-get install -y nodejs
