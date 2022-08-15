@@ -14,7 +14,8 @@ jobs:
           sudo npm install --location=global yarn
       - name: Build yarn app
         run: |
-          cd ${{ github.workspace }}../
+          cd ${{ github.workspace }}
+          cd ../
           yarn build
       - name: Create SSH key an copy files
         run: |
