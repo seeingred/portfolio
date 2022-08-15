@@ -16,6 +16,7 @@ jobs:
       - name: Build yarn app
         run: |
           cd ${{ github.workspace }}
+          yarn
           yarn build
       - name: Create SSH key an copy files
         run: |
