@@ -50,15 +50,12 @@ export const fetchAssets = async (
                 })
             }
         );
-        console.log(`resp:  `, resp);
-        console.log(`token.decimal:  `, token.decimal);
         const coin: coin = {
             code: token.ticker,
             amount: parseInt(resp.result, 16) / Math.pow(10, token.decimal),
             price: 0,
             total: 0
         };
-        console.log(`coin:  `, coin);
         const tokenToConvert = tokenConvert.find(t => t.code.toUpperCase() === coin.code.toUpperCase());
         if (tokenToConvert) {
             coin.code = tokenToConvert.toCode.toUpperCase();

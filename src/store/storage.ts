@@ -1,7 +1,7 @@
 import { apiKey } from './../types/local';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState, AppThunk, ActionWithPayload } from '.';
-import Settings from '../routes/Settings';
+import Settings from '../routes/ChainSettings';
 
 export type StorageToken = {
     ticker: string;
@@ -162,6 +162,12 @@ export const storageSlice = createSlice({
                 crypto.tokens.splice(tokenIndex, 1);
             }
         },
+        saveAllSettings: (
+            state,
+            action: PayloadAction<StorageCrypto[]>
+        ) => {
+            state.cryptos = action.payload
+        },
         saveSettings: (
             state,
             action: PayloadAction<Settings>
@@ -198,7 +204,8 @@ export const {
     removeCryptos,
     removeAddresses,
     modifyAddress,
-    saveSettings
+    saveSettings,
+    saveAllSettings
 } = storageSlice.actions;
 
 export const addAssetOrAddressAddModify =
@@ -287,6 +294,13 @@ export const saveSettingsThunk =
     (dispatch, getState) => {
         settings.chain = settings.chain.toLowerCase();
         dispatch(saveSettings(settings));
+        saveStorage(getState().storage.cryptos);
+    };
+
+export const saveAllSettingsThunk =
+    (settings: StorageCrypto[]): AppThunk =>
+    (dispatch, getState) => {
+        dispatch(saveAllSettings(settings));
         saveStorage(getState().storage.cryptos);
     };
 

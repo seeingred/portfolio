@@ -30,7 +30,6 @@ export const fetchAssets = async (address: string,  tokens: StorageToken[]) => {
         sol.amount += stake.amount / 1000000000;
     }
     for (const token of tokens) {
-        console.log(`tokensFetched:  `, tokensFetched);
         const existingToken = tokensFetched.find((t) => t.tokenAddress === token.contract);
         if (!existingToken) {
             continue;

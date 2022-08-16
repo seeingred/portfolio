@@ -15,6 +15,7 @@ import Addresses from './routes/Addresses';
 import Tokens from './routes/Tokens';
 import Token from './routes/Token';
 import Settings from './routes/Settings';
+import ChainSettings from './routes/ChainSettings';
 
 export const LinkBehavior = forwardRef<
     any,
@@ -67,7 +68,9 @@ const App = (): JSX.Element => {
                     <Route path="/token" element={<Token />} />
                     <Route path="/token/:chain" element={<Token />} />
                     <Route path="/token/:chain/:ticker" element={<Token />} />
-                    <Route path="/settings/:chain" element={<Settings />} />
+                    <Route path="/settings" element={<Settings />} />
+                    <Route path="/settings/:chain" element={<ChainSettings />} />
+                    
                 </Routes>
             </BrowserRouter>
         </ThemeProvider>

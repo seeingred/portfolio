@@ -20,7 +20,7 @@ import {
     Checkbox,
     Popover
 } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import {Fragment, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store';
@@ -146,15 +146,15 @@ export default function Manage({
             return item;
         } else {
             return (
-                <React.Fragment key={itemNumber}>
+                <Fragment key={itemNumber}>
                     {item}
                     <Divider />
-                </React.Fragment>
+                </Fragment>
             );
         }
     }
 
-    const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
+    const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(
         null
     );
 

@@ -41,9 +41,12 @@ import {
     TableContainer,
     TableHead,
     TableRow,
-    Paper
+    Paper,
+    Popover,
+    ListItemButton
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { LinkBehavior } from '../App';
 
 function addCoins(data: coin[], coins: coin[]): coin[] {
     for (const coin of data) {
@@ -93,14 +96,13 @@ export default function Portfolio(): JSX.Element {
             );
             if (fetchMultipleAddresses) {
                 const data: coin[] = await fetchAssets(
-                    addressInfo.addresses.map(a => a.value),
+                    addressInfo.addresses.map((a) => a.value),
                     addressInfo.tokens,
                     addressInfo.apiKey
                 );
                 newCoins = addCoins(data, newCoins);
             } else {
                 for (const address of addressInfo.addresses) {
-                    console.log(`1:  `, 1);
                     const data: coin[] = await fetchAssets(
                         address.value,
                         addressInfo.tokens,
@@ -111,9 +113,6 @@ export default function Portfolio(): JSX.Element {
             }
         }
 
-        
-
-
         const coinSymbols = newCoins.map((c) => c.code.toUpperCase());
         const coinList: coinList[] = await fetchJson(
             `https://api.coingecko.com/api/v3/coins/list`
@@ -122,7 +121,9 @@ export default function Portfolio(): JSX.Element {
         let newNotFoundTokens = [...notFoundCoins];
         for (const c of coinSymbols) {
             const coinSymbol = c.toUpperCase();
-            const coin = coinList.find((coin) => coin.symbol.toUpperCase() === coinSymbol);
+            const coin = coinList.find(
+                (coin) => coin.symbol.toUpperCase() === coinSymbol
+            );
             if (!coin) {
                 newNotFoundTokens.push(coinSymbol);
                 const index = newCoins.findIndex((coin) => coin.code === c);
@@ -131,7 +132,6 @@ export default function Portfolio(): JSX.Element {
             }
             coinIds.push(coin.id);
         }
-
 
         setNotFoundCoins(newNotFoundTokens);
         const data: prices = await fetchJson(
@@ -143,7 +143,10 @@ export default function Portfolio(): JSX.Element {
             if (!coinExternal) {
                 continue;
             }
-            const coin = newCoins.find((c) => c.code.toUpperCase() === coinExternal.symbol.toUpperCase());
+            const coin = newCoins.find(
+                (c) =>
+                    c.code.toUpperCase() === coinExternal.symbol.toUpperCase()
+            );
             if (!coin) {
                 continue;
             }
@@ -184,6 +187,21 @@ export default function Portfolio(): JSX.Element {
         return '+ 10000000 / 10% since 22/04/22 22:24';
     }
 
+    const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+
+    const handleSettingsClick = (
+        event: React.MouseEvent<HTMLButtonElement>
+    ) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleSettingsClose = () => {
+        setAnchorEl(null);
+    };
+
+    const open = Boolean(anchorEl);
+    const id = open ? 'popover' : undefined;
+
     return (
         <Container
             maxWidth="sm"
@@ -194,16 +212,40 @@ export default function Portfolio(): JSX.Element {
         >
             <AppBar sx={{ position: 'relative' }} enableColorOnDark={true}>
                 <Toolbar>
-                    
                     <IconButton
-                        edge="start"
                         color="inherit"
-                        href="/chains"
                         aria-label="close"
+                        onClick={handleSettingsClick}
                     >
                         <IconsSettings />
                     </IconButton>
-
+                    <Popover
+                        id={id}
+                        open={open}
+                        anchorEl={anchorEl}
+                        onClose={handleSettingsClose}
+                        anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'left'
+                        }}
+                    >
+                        <List>
+                            <ListItemButton
+                                component={LinkBehavior}
+                                href={`/chains`}
+                            >
+                                <ListItemText
+                                    primary={t('Chains & addresses')}
+                                />
+                            </ListItemButton>
+                            <ListItemButton
+                                component={LinkBehavior}
+                                href={`/settings`}
+                            >
+                                <ListItemText primary={t('Settings')} />
+                            </ListItemButton>
+                        </List>
+                    </Popover>
                     <Stack direction="row" alignItems="center" sx={{ flex: 1 }}>
                         <Typography
                             sx={{ ml: 2, mr: 2 }}
@@ -214,16 +256,16 @@ export default function Portfolio(): JSX.Element {
                         </Typography>
                         {loading ? <div>{t('Loading...')}</div> : null}
                     </Stack>
-                    {false?(
-                    <IconButton
-                        edge="start"
-                        color="inherit"
-                        href="/"
-                        aria-label="close"
-                    >
-                        <IconEye />
-                    </IconButton>
-                    ): null}
+                    {false ? (
+                        <IconButton
+                            edge="start"
+                            color="inherit"
+                            href="/"
+                            aria-label="close"
+                        >
+                            <IconEye />
+                        </IconButton>
+                    ) : null}
                 </Toolbar>
             </AppBar>
             <TableContainer component={Paper}>
