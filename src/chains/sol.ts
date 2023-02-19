@@ -3,16 +3,36 @@ import type { coin } from '../types/local';
 import type { solScanToken, solScanSolAmount } from '../types/solScan';
 import { StorageToken } from '../store/storage';
 const apiRoot = 'https://public-api.solscan.io/';
-export const fetchAssets = async (address: string,  tokens: StorageToken[]) => {
-    const tokensFetched: solScanToken[] = await fetchJson(
-        `${apiRoot}account/tokens?account=${address}`
-    );
-    const stakes: any[] = await fetchJson(
-        `${apiRoot}account/stakeAccounts?account=${address}`
-    );
-    const sol: solScanSolAmount = await fetchJson(
-        `${apiRoot}account/${address}`
-    );
+export const fetchAssets = async (address: string, tokens: StorageToken[]) => {
+    let tokensFetched: solScanToken[];
+    try {
+        tokensFetched = await fetchJson(
+            `${apiRoot}account/tokens?account=${address}`
+        );
+    } catch (e) {
+        tokensFetched = [];
+    }
+    let stakes: any[];
+    try {
+        stakes = await fetchJson(
+            `${apiRoot}account/stakeAccounts?account=${address}`
+        );
+    } catch (e) {
+        stakes = [];
+    }
+    let sol: solScanSolAmount;
+    try {
+        sol = await fetchJson(`${apiRoot}account/${address}`);
+    } catch (e) {
+        sol = {
+            account: '',
+            executable: false,
+            lamports: 0,
+            ownerProgram: '',
+            rentEpoch: 0,
+            type: ''
+        };
+    }
     const coins: coin[] = [];
     coins.push({
         code: 'sol',
@@ -23,14 +43,16 @@ export const fetchAssets = async (address: string,  tokens: StorageToken[]) => {
     for (const s in stakes) {
         // staking amount (not tested)
         const stake = stakes[s];
-        const sol = coins.find((c) => c.code === 'sol');
-        if (!sol) {
+        const soll = coins.find((c) => c.code === 'sol');
+        if (!soll) {
             continue;
         }
-        sol.amount += stake.amount / 1000000000;
+        soll.amount += stake.amount / 1000000000;
     }
     for (const token of tokens) {
-        const existingToken = tokensFetched.find((t) => t.tokenAddress === token.contract);
+        const existingToken = tokensFetched.find(
+            (t) => t.tokenAddress === token.contract
+        );
         if (!existingToken) {
             continue;
         }

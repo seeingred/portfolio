@@ -56,5 +56,8 @@
   "devDependencies": {
     "@yarnpkg/sdks": "^3.0.0-rc.14",
     "eslint-config-react-app": "^7.0.1"
+  },
+  "engines": {
+    "node": "14"
   }
 }
