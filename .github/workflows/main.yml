@@ -16,6 +16,7 @@ jobs:
           sudo npm install --location=global yarn
       - name: Build yarn app
         run: |
+          node -v
           yarn
           yarn build
       - name: Create SSH key an copy files
